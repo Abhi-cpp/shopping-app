@@ -1,67 +1,75 @@
-const repo = require('../DB/repository/cartrepo');
+const repo = require("../DB/repository/cartrepo");
+const productRepo = require("../DB/repository/productrepo");
+const userRepo = require("../DB/repository/userrepo");
+
 module.exports = {
-    async addcart(req, res) {
-        const obj = req.body;
-        console.log(obj);
-        const promise = await repo.addcart(obj)
-        promise.then((data) => {
-            res.status(200).json({
-                message: 'Cart Added',
-                data: data
-            })
-        })
-            .catch((err) => {
-                res.status(500).json({
-                    message: 'Error Occured',
-                    err: err
-                })
-            })
-    },
-    async fetchcart(req, res) {
-        const obj = req.body;
-        const result = await repo.fetchcart(obj);
+    async add(request, response) {
+        const cartObject = request.body;
+        const result = await repo.getByProduct(cartObject);
+        console.log("### " + result);
         if (result) {
-            res.status(200).send({
-                message: "Products Fetched Successfully",
-                result,
-            });
+            response.status(500).send({
+                message: "Already in Cart"
+            })
         }
         else {
-            res.status(401).send({
-                message: "No Product Found",
-            });
+            repo.add(cartObject).then(data => {
+                response.status(201).send({
+                    message: "Product added to cart Successfully",
+                    data,
+                });
+            }).catch(err => {
+                response.status(401).send({
+                    message: "Some error occured"
+                });
+            })
+
         }
     },
-    deletecart(req, res) {
-        const obj = req.body;
-        repo.deletecart(obj)
-            .then((data) => {
-                res.status(200).send({
-                    message: "Product Deleted Successfully",
-                    data,
-                });
+    update(request, response) {
+        const cartObject = request.body;
+        repo.update(cartObject).then(data => {
+            response.status(201).send({
+                message: "Updated Successfully",
+                data,
+            });
+        }).catch(err => {
+            response.status(401).send({
+                message: "Some error occured", err,
             })
-            .catch((error) => {
-                res.status(500).send({
-                    message: "Error Deleting Product",
-                    error,
-                });
-            })
+        })
+
+
     },
-    updatecart(req, res) {
-        const obj = req.body;
-        repo.updatecart(obj)
-            .then((data) => {
-                res.status(200).send({
-                    message: "Product Updated Successfully",
-                    data,
-                });
+    delete(request, response) {
+        const cartObject = request.body;
+        repo.delete(cartObject).then(data => {
+            response.status(201).send({
+                message: "Deleted Successfully",
+                data,
+            });
+        }).catch(err => {
+            response.status(401).send({
+                message: "Some error occured", err,
             })
-            .catch((error) => {
-                res.status(500).send({
-                    message: "Error Updating Product",
-                    error,
-                });
+        })
+    },
+    async fetch(request, response) {
+        const userObject = request.body;
+        // console.log(userObject);
+        const user = await userRepo.find(userObject);
+        const result = await repo.getByUser(user);
+
+        if (result) {
+            response.status(201).send({
+                message: "Users Data Found", result
             })
-    }
+
+        }
+        else {
+            response.status(404).send({
+                message: "error"
+            })
+        }
+    },
 }

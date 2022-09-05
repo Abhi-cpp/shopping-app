@@ -14,10 +14,10 @@ module.exports = {
             FETCH: '/order/fetch',
         },
         CART: {
-            ADD: '/cart/add',
-            FETCH: '/cart/fetch',
-            DELETE: '/cart/delete',
-            UPDATE: '/cart/update'
+            ADD: "/addToCart",
+            DELETE: "/deleteFromCart",
+            UPDATE: "/updateCart",
+            FETCH: "/fetch"
         }
     }
 }

@@ -1,12 +1,12 @@
-const CartModel = require('../models/cartmodel');
+const CartModel = require("../models/cartmodel");
 
 module.exports = {
-    addcart(req) {
-        const cart = new CartModel(req);
-        const count=CartModel.countDocuments({user:req.user._id,product:req.product._id});
+    add(cartObject) {
+        var promise = CartModel.create(cartObject);
+        return promise;
     },
-    async fetchcart(obj) {
-        const result = await CartModel.find({ user: obj.user._id });
+    update(cartObject) {
+        const result = CartModel.findOneAndUpdate({ product: cartObject.product }, { $set: { qt: cartObject.qt } });
         if (result) {
             return result;
         }
@@ -14,13 +14,26 @@ module.exports = {
             return null;
         }
     },
-    deletecart(obj) {
-        const promise = CartModel.deleteOne({ user: obj.user._id, product: obj.product._id });
-        return promise;
+    delete(cartObject) {
+        const result = CartModel.findOneAndDelete({ product: cartObject.product });
+        return result;
     },
-    updatecart(obj) {
-        const promise = CartModel.updateOne({ user: obj.user._id, product: obj.product._id }, { quantity: obj.quantity });
-        return promise;
+    async getByUser(userObject) {
+        const result = await CartModel.find({ user: userObject._id });
+        if (result) {
+            return result;
+        }
+        else {
+            return null;
+        }
+    },
+    async getByProduct(cartObject) {
+        const result = await CartModel.findOne({ product: cartObject.product, user: cartObject.user });
+        if (result) {
+            return result;
+        }
+        else {
+            return null;
+        }
     }
-
 }

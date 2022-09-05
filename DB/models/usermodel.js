@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema({
     },
     isbuyer: {
         type: Boolean,
-        required: true,
+        default: false
     },
 });
 
