@@ -1,5 +1,7 @@
 const repo = require('../DB/repository/userrepo');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const SECRET = 'MY_SECRET_KEY';
 
 module.exports = {
     register(req, res) {
@@ -35,9 +37,19 @@ module.exports = {
         console.log(userObj);
         const result = await repo.login(userObj);
         if (result) {
+            // console.log(result);
+            const token = jwt.sign({
+                userId: result._id,
+                email: result.email,
+            },
+                SECRET,
+                { expiresIn: "24h" }
+            );
+            const email = userObj.email;
             res.status(200).send({
                 message: "User Logged In Successfully",
-                result,
+                token,
+                email,
             });
         }
         else {
@@ -46,5 +58,25 @@ module.exports = {
             });
         }
 
+    },
+    async authenticate(req, res) {
+        const body = req.body;
+        console.log(body);
+        const token = body.token;
+        console.log(token);
+        const decoded = jwt.verify(token, SECRET);
+        console.log(decoded);
+        const user = await repo.checkUser(decoded);
+        if (user) {
+            res.status(200).send({
+                message: "User Authenticated Successfully",
+                user,
+            });
+        }
+        else {
+            res.status(401).send({
+                message: "Invalid Credentials",
+            });
+        }
     }
 }

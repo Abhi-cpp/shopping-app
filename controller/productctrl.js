@@ -27,7 +27,21 @@ module.exports = {
         }
         else {
             res.status(401).send({
-                message: "No Products Found",
+                message: "No Product Found",
+            });
+        }
+    },
+    async fetchProduct(req, res) {
+        const result = await repo.fetchProduct(req.body)
+        if (result) {
+            res.status(200).send({
+                message: "Product Fetched Successfully",
+                result,
+            });
+        }
+        else {
+            res.status(401).send({
+                message: "No Product Found",
             });
         }
     },

@@ -1,3 +1,4 @@
+const { fetchProduct } = require('../../controller/productctrl');
 const ProductModel = require('../models/productmodel');
 
 
@@ -15,8 +16,17 @@ module.exports = {
             return null;
         }
     },
+    async fetchProduct(productid) {
+        const result = await ProductModel.find({ _id: productid });
+        if (result) {
+            return result;
+        }
+        else {
+            return null;
+        }
+    },
     deleteProduct(productObj) {
-        var promise = ProductModel.deleteOne({ _id: productObj });
+        var promise = ProductModel.deleteOne({ _id: productObj._id });
         return promise;
     }
 }
