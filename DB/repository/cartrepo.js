@@ -5,8 +5,9 @@ module.exports = {
         var promise = CartModel.create(cartObject);
         return promise;
     },
-    update(cartObject) {
-        const result = CartModel.findOneAndUpdate({ product: cartObject.product }, { $set: { qt: cartObject.qt } });
+    async update(cartObject) {
+        var result = await CartModel.findOneAndUpdate({ product: cartObject.product, user: cartObject.user }, { $set: { quantity: cartObject.quantity } });
+        result = await CartModel.findOne({ product: cartObject.product, user: cartObject.user });
         if (result) {
             return result;
         }
@@ -19,7 +20,7 @@ module.exports = {
         return result;
     },
     async getByUser(userObject) {
-        const result = await CartModel.find({ user: userObject._id });
+        const result = await CartModel.find({ user: userObject });
         if (result) {
             return result;
         }

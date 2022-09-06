@@ -12,20 +12,20 @@ module.exports = {
                 userObj.password = hash;
                 repo.register(userObj)
                     .then((data) => {
-                        res.status(201).send({
+                        res.status(200).send({
                             message: "User Created Successfully",
                             data,
                         });
                     })
                     .catch((error) => {
-                        res.status(500).send({
+                        res.status(400).send({
                             message: "Error creating user",
                             error,
                         });
                     })
             })
             .catch((e) => {
-                res.status(500).send({
+                res.status(400).send({
                     message: "Password was not hashed successfully",
                     e,
                 });
@@ -34,49 +34,51 @@ module.exports = {
     ,
     async login(req, res) {
         let userObj = req.body;
-        console.log(userObj);
+        // console.log(userObj);
         const result = await repo.login(userObj);
         if (result) {
-            // console.log(result);
+            console.log(result);
             const token = jwt.sign({
                 userId: result._id,
                 email: result.email,
+
             },
                 SECRET,
-                { expiresIn: "24h" }
+                { expiresIn: "4h" }
             );
             const email = userObj.email;
+            const seller = (result.isbuyer == false);
             res.status(200).send({
                 message: "User Logged In Successfully",
                 token,
                 email,
+                seller,
             });
         }
         else {
-            res.status(401).send({
+            res.status(400).send({
                 message: "Invalid Credentials",
             });
         }
 
     },
     async authenticate(req, res) {
-        const body = req.body;
+        const body = req.headers.authorization;
+        const token = body.split(" ")[1];
         console.log(body);
-        const token = body.token;
         console.log(token);
-        const decoded = jwt.verify(token, SECRET);
-        console.log(decoded);
-        const user = await repo.checkUser(decoded);
-        if (user) {
-            res.status(200).send({
-                message: "User Authenticated Successfully",
-                user,
-            });
-        }
-        else {
-            res.status(401).send({
-                message: "Invalid Credentials",
-            });
-        }
+        jwt.verify(token, SECRET, function (error, decoded) {
+            if (error) {
+                res.status(400).send({
+                    message: "Invalid Token",
+                });
+            }
+            else if (decoded) {
+                res.status(200).send({
+                    message: "Token Valid",
+                    decoded,
+                });
+            }
+        });
     }
 }

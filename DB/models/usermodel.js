@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
+        // required: true,
     },
     email: {
         type: String,
@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
         min: 4,
     },
-    isbuyer: {
+    isseller: {
         type: Boolean,
         default: false
     },

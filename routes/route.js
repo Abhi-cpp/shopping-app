@@ -14,6 +14,7 @@ userRoutes.post(PRODUCTS.ADD, productctrl.addProduct);
 userRoutes.get(PRODUCTS.FETCH, productctrl.fetchProducts);
 userRoutes.get(PRODUCTS.FETCHONE, productctrl.fetchProduct);
 userRoutes.post(PRODUCTS.DELETE, productctrl.deleteProduct);
+userRoutes.post(PRODUCTS.UPDATE, productctrl.updateProduct);
 userRoutes.post(ORDER.ADD, orderctrl.addOrder);
 userRoutes.get(ORDER.FETCH, orderctrl.fetchOrders);
 userRoutes.post(CART.ADD, cartCtrl.add);

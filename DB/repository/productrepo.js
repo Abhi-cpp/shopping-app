@@ -5,6 +5,7 @@ const ProductModel = require('../models/productmodel');
 module.exports = {
     addProduct(productObj) {
         var promise = ProductModel.create(productObj);
+        console.log(promise);
         return promise;
     },
     async fetchProducts() {
@@ -28,5 +29,14 @@ module.exports = {
     deleteProduct(productObj) {
         var promise = ProductModel.deleteOne({ _id: productObj._id });
         return promise;
+    },
+    async updateProduct(productObj) {
+        const result = await ProductModel.updateOne({ _id: productObj._id }, productObj);
+        if (result) {
+            return result;
+        }
+        else {
+            return null;
+        }
     }
 }

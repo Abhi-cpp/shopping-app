@@ -7,7 +7,8 @@ module.exports = {
             FETCH: '/products/fetch',
             ADD: '/products/add',
             DELETE: '/products/delete',
-            FETCHONE: '/products/fetchone'
+            FETCHONE: '/products/fetchone',
+            UPDATE: '/products/update'
         },
         ORDER: {
             ADD: '/order/add',

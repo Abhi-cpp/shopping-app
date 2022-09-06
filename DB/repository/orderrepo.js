@@ -3,7 +3,7 @@ module.exports = {
     addOrder(req) {
         return new Promise((resolve, reject) => {
             const order = new OrderModel({
-                user: req.user._id,
+                user: req.user,
                 orderItems: {
                     product: req.product._id,
                     address: req.address,
@@ -20,8 +20,8 @@ module.exports = {
             })
         })
     },
-    async fetchOrders(req) {
-        const result = await OrderModel.find({ user: req.user._id });
+    async fetchOrders(id) {
+        const result = await OrderModel.find({ user: id });
         if (result) {
             return result;
         }
